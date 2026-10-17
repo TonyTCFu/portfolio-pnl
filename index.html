@@ -21,6 +21,9 @@
   .tag.live { background:#e9f7ef; color:var(--pos); border-color:#c9ecd8; }
   .tag.warn { background:#fef3e2; color:#b45309; border-color:#f5ddba; }
   .meta { color:var(--dim); font-size:13px; margin:6px 0 18px; }
+  .btn { font-size:14px; padding:8px 16px; border-radius:8px; border:1px solid var(--line);
+         background:var(--surface); cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:24px; }
   .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
   .card-label { font-size:13px; color:var(--dim); margin-bottom:6px; }
@@ -46,6 +49,7 @@
   <header>
     <h1>美股持倉損益 Dashboard</h1>
     <span class="tag" id="quoteTag">持倉數據：2026-10-16 美股收盤</span>
+    <button class="btn" id="refreshBtn">⟳ 刷新行情</button>
   </header>
   <div class="meta" id="quoteMeta">靜態快照（2026-10-16 收盤價）· 頁面更新 2026-10-17 · 數據來源：券商資金流水與持倉截圖</div>
 
@@ -61,7 +65,7 @@
   </div>
 
   <section>
-    <h2>持倉明細 <span class="dim">（成本為券商口徑）</span></h2>
+    <h2>持倉明細 <span class="dim">（現價 / 市值可即時刷新；成本為券商口徑）</span></h2>
     <table>
       <tr><th>標的</th><th class="num">數量</th><th class="num">現價</th><th class="num">成本/股</th>
           <th class="num">市值</th><th class="num">投入成本</th><th class="num">浮動盈虧</th><th class="num">盈虧率</th></tr>
@@ -143,7 +147,7 @@
       <b>浮動盈虧</b>＝持倉市值 − 投入成本。14 檔合計 <b>−$771.15</b>。<br>
       <b>可用現金</b>＝總投入 − 買入成交 − 買入手續費 + 股息淨收入＝<b>$2,938.64</b>（帳戶內無賣出、無出金）。<br>
       <b>帳戶總值</b>＝持倉市值 + 可用現金。<b>累計損益</b>＝帳戶總值 − 總投入（含手續費、股息稅費的影響）。<br>
-      本表為每日收盤快照，不做盤中即時刷新；每次更新以最新收盤價為基準並標註日期。
+      行情標籤誠實標示：<b>靜態快照</b>為收盤價；<b>即時</b>為瀏覽器直連報價（CNBC 主源、TradingView 備援），開頁自動刷新、盤中每 30 分鐘自動刷新，也可手動點擊刷新；雙源失敗時保留快照、標示「獲取失敗」。
     </div>
   </section>
 
@@ -152,6 +156,177 @@
     持倉股數與每檔買入金額已逐檔交叉核對一致 · 本頁為個人持倉記錄，公開連結請注意隱私。
   </footer>
 </div>
+<script>
+(function () {
+  /* Live quote refresh: CNBC bulk primary, TradingView per-symbol fallback.
+     Updates price/market/floating per row and the summary cards.
+     Auto-refresh on page open, manual button, and every 30 min during market hours. */
+  var HOLDINGS = [
+    {s:"SPCX", q:10, cost:1363.00, tv:"NASDAQ"},
+    {s:"NVDA", q:6, cost:1421.60, tv:"NASDAQ"},
+    {s:"AVGO", q:3, cost:1060.64, tv:"NASDAQ"},
+    {s:"GEV", q:1, cost:928.18, tv:"NYSE"},
+    {s:"MU", q:1, cost:1090.80, tv:"NASDAQ"},
+    {s:"VRT", q:4, cost:1010.02, tv:"NYSE"},
+    {s:"TSM", q:2, cost:845.68, tv:"NYSE"},
+    {s:"ETN", q:2, cost:870.06, tv:"NYSE"},
+    {s:"META", q:1, cost:747.87, tv:"NASDAQ"},
+    {s:"HOOD", q:5, cost:557.60, tv:"NASDAQ"},
+    {s:"CRSP", q:10, cost:537.86, tv:"NASDAQ"},
+    {s:"TEM", q:5, cost:275.53, tv:"NASDAQ"},
+    {s:"BEAM", q:10, cost:257.15, tv:"NASDAQ"},
+    {s:"SKHY", q:1, cost:160.90, tv:"NASDAQ"}
+  ];
+  var CASH = 2938.64, TOTAL_IN = 14105.59;
+  var SYMBOLS = HOLDINGS.map(function (h) { return h.s; });
+  var CNBC_URL = "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols="
+    + SYMBOLS.join(",") + "&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json";
+  var btn = document.getElementById("refreshBtn");
+  var tag = document.getElementById("quoteTag");
+  var meta = document.getElementById("quoteMeta");
+  if (!btn || !tag || !meta) return;
+  var live = {}; // symbol -> {price, source}
+  var SNAPSHOT_ASOF = (function () {
+    var m = tag.textContent.match(/(\d{4}-\d{2}-\d{2})/);
+    return m ? m[1] : "";
+  })();
+
+  function money(x, sign) {
+    var neg = x < 0;
+    var a = Math.abs(x).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    var prefix = sign ? (neg ? "\u2212$" : "+$") : (neg ? "\u2212$" : "$");
+    return prefix + a;
+  }
+  function pct(x) {
+    var neg = x < 0;
+    return (neg ? "\u2212" : "+") + Math.abs(x).toFixed(2) + "%";
+  }
+  function cls(x) { return x > 0 ? "pos" : (x < 0 ? "neg" : "zero"); }
+  function numOf(v) {
+    if (typeof v === "number") return v;
+    if (typeof v === "string") { var p = parseFloat(v.replace(/[$,\s%]/g, "")); return isNaN(p) ? NaN : p; }
+    return NaN;
+  }
+  function fetchJson(url, ms) {
+    var c = new AbortController(), t = setTimeout(function () { c.abort(); }, ms || 9000);
+    return fetch(url, { cache: "no-store", signal: c.signal }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).finally(function () { clearTimeout(t); });
+  }
+  function etParts(d) {
+    var out = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short",
+      hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(d)
+      .forEach(function (p) { out[p.type] = p.value; });
+    return out;
+  }
+  function inMarketHours() {
+    var p = etParts(new Date());
+    if (["Sat", "Sun"].indexOf(p.weekday) !== -1) return false;
+    var m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
+    return m >= 570 && m <= 960;
+  }
+  function setCell(id, text, c) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    if (c) el.className = "num " + c;
+  }
+
+  function recompute(liveCount, sources) {
+    var market = 0, floating = 0;
+    HOLDINGS.forEach(function (h, i) {
+      var pxEl = document.getElementById("px-" + i);
+      var p = live[h.s] ? live[h.s].price : numOf(pxEl.textContent);
+      var mv = p * h.q, fl = mv - h.cost, flp = fl / h.cost * 100;
+      market += mv; floating += fl;
+      setCell("px-" + i, "$" + p.toFixed(p < 100 ? 3 : 2));
+      setCell("mv-" + i, money(mv));
+      setCell("fl-" + i, money(fl, true), cls(fl));
+      setCell("flp-" + i, pct(flp), cls(flp));
+    });
+    var account = market + CASH;
+    var pnl = account - TOTAL_IN;
+    var cvM = document.getElementById("cv-market"), cvF = document.getElementById("cv-floating"),
+        cvA = document.getElementById("cv-account"), cvP = document.getElementById("cv-pnl");
+    cvM.textContent = money(market);
+    cvF.textContent = money(floating, true); cvF.className = "card-value " + cls(floating);
+    cvA.textContent = money(account);
+    cvP.textContent = money(pnl, true) + " (" + pct(pnl / TOTAL_IN * 100) + ")";
+    cvP.className = "card-value " + cls(pnl);
+    var p = etParts(new Date());
+    tag.textContent = "即時行情 · " + liveCount + "/14 檔已更新";
+    tag.className = "tag live";
+    meta.textContent = "即時報價 " + p.hour + ":" + p.minute + " ET · 來源 " + sources +
+      " · 快照基準 " + SNAPSHOT_ASOF + " 收盤";
+  }
+
+  function loadCnbc() {
+    return fetchJson(CNBC_URL, 9000).then(function (data) {
+      var arr = data && data.FormattedQuoteResult && data.FormattedQuoteResult.FormattedQuote;
+      if (!arr) throw new Error("CNBC unavailable");
+      var out = {};
+      arr.forEach(function (q) {
+        var price = numOf(q.last);
+        if (q && q.code === 0 && !isNaN(price)) {
+          out[String(q.symbol || "").toUpperCase()] = { price: price, source: "CNBC 直連" };
+        }
+      });
+      return out;
+    });
+  }
+  function loadTV(h) {
+    var url = "https://scanner.tradingview.com/symbol?symbol=" +
+      encodeURIComponent(h.tv + ":" + h.s) + "&fields=close%2Cchange%2Cvolume";
+    return fetchJson(url, 9000).then(function (data) {
+      var price = numOf(data && data.close);
+      if (isNaN(price)) throw new Error("TV unavailable");
+      return { price: price, source: "TradingView 直連" };
+    });
+  }
+
+  function refresh(silent) {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    var label = btn.textContent;
+    if (!silent) btn.textContent = "\u27F3 正在刷新…";
+    function done() { btn.disabled = false; btn.textContent = label; }
+    loadCnbc().catch(function () { return {}; }).then(function (cnbc) {
+      var missing = HOLDINGS.filter(function (h) { return !cnbc[h.s]; });
+      return Promise.all(missing.map(function (h) {
+        return loadTV(h).then(function (q) { return [h.s, q]; }).catch(function () { return null; });
+      })).then(function (tvResults) {
+        var liveCount = 0, srcSet = {};
+        SYMBOLS.forEach(function (s) {
+          var q = cnbc[s];
+          if (!q) {
+            var hit = tvResults.filter(function (r) { return r && r[0] === s; })[0];
+            if (hit) q = hit[1];
+          }
+          if (q) { live[s] = q; liveCount++; srcSet[q.source] = true; }
+        });
+        if (liveCount === 0) {
+          tag.textContent = "即時行情獲取失敗，點擊重試";
+          tag.className = "tag warn";
+          meta.textContent = "未取得即時行情，顯示 " + SNAPSHOT_ASOF + " 收盤快照";
+        } else {
+          recompute(liveCount, Object.keys(srcSet).join("＋"));
+        }
+        done();
+      });
+    }).catch(function () {
+      tag.textContent = "即時行情獲取失敗，點擊重試";
+      tag.className = "tag warn";
+      done();
+    });
+  }
+
+  btn.addEventListener("click", function () { refresh(false); });
+  refresh(true); // fetch once on page open
+  setInterval(function () { if (inMarketHours()) refresh(true); }, 30 * 60 * 1000);
+})();
+</script>
 <script>
 /* Cross-device cache busting: version.json is rewritten on every daily deploy.
    If the published snapshot is newer than this page's embedded one, reload once;
