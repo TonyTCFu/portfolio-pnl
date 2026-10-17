@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>美股持倉損益 Dashboard</title>
+<style>
+  :root { --bg:#f6f7f9; --surface:#fff; --text:#1a1d21; --dim:#6b7280; --line:#e5e7eb;
+          --pos:#0e7a3d; --neg:#c0392b; --accent:#1a56db; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Noto Sans TC","PingFang TC","Microsoft JhengHei",sans-serif; }
+  .wrap { max-width:1024px; margin:0 auto; padding:20px 16px 48px; }
+  header { display:flex; flex-wrap:wrap; align-items:center; gap:10px; margin-bottom:6px; }
+  h1 { font-size:24px; margin:0; }
+  .tag { display:inline-block; font-size:12px; padding:3px 10px; border-radius:999px;
+         background:#eef2ff; color:var(--accent); border:1px solid #dbe3ff; }
+  .tag.live { background:#e9f7ef; color:var(--pos); border-color:#c9ecd8; }
+  .tag.warn { background:#fef3e2; color:#b45309; border-color:#f5ddba; }
+  .meta { color:var(--dim); font-size:13px; margin:6px 0 18px; }
+  .btn { font-size:14px; padding:8px 16px; border-radius:8px; border:1px solid var(--line);
+         background:var(--surface); cursor:pointer; }
+  .btn:disabled { opacity:.5; cursor:default; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-bottom:24px; }
+  .card { background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:14px 16px; }
+  .card-label { font-size:13px; color:var(--dim); margin-bottom:6px; }
+  .card-value { font-size:22px; font-weight:700; font-variant-numeric:tabular-nums; }
+  .card-value.pos { color:var(--pos); } .card-value.neg { color:var(--neg); }
+  .card-note { font-size:12px; color:var(--dim); margin-top:6px; }
+  section { background:var(--surface); border:1px solid var(--line); border-radius:12px;
+            padding:16px; margin-bottom:20px; overflow-x:auto; }
+  h2 { font-size:17px; margin:0 0 12px; }
+  table { width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums; }
+  th, td { text-align:left; padding:8px 10px; border-bottom:1px solid var(--line); white-space:nowrap; }
+  th { color:var(--dim); font-weight:600; font-size:12px; }
+  td.num, th.num { text-align:right; }
+  .pos { color:var(--pos); } .neg { color:var(--neg); } .zero { color:var(--dim); }
+  .dim { color:var(--dim); font-size:12px; }
+  .notes { font-size:13px; color:var(--dim); line-height:1.8; }
+  .notes b { color:var(--text); }
+  footer { color:var(--dim); font-size:12px; margin-top:8px; line-height:1.7; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>美股持倉損益 Dashboard</h1>
+    <span class="tag" id="quoteTag">持倉數據：2026-10-16 美股收盤</span>
+    <button class="btn" id="refreshBtn">⟳ 刷新行情</button>
+  </header>
+  <div class="meta" id="quoteMeta">靜態快照（2026-10-16 收盤價）· 頁面更新 2026-10-17 · 數據來源：券商資金流水與持倉截圖</div>
+
+  <div class="grid">
+    <div class="card"><div class="card-label">總投入（換匯）</div><div class="card-value">$14,105.59</div><div class="card-note">全部換匯入金合計</div></div>
+    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$10,355.74</div><div class="card-note">14 檔持倉現價合計</div></div>
+    <div class="card"><div class="card-label">可用現金</div><div class="card-value">$2,938.64</div><div class="card-note">總投入 − 買入 − 手續費 + 股息淨收入</div></div>
+    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$771.15</div><div class="card-note">持倉市值 − 投入成本</div></div>
+    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$13,294.38</div><div class="card-note">持倉市值 + 可用現金</div></div>
+    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$811.21 (−5.75%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
+    <div class="card"><div class="card-label">交易手續費</div><div class="card-value">$41.88</div><div class="card-note">22 筆買入手續費合計</div></div>
+    <div class="card"><div class="card-label">股息淨收入</div><div class="card-value pos">+$1.82</div><div class="card-note">股息入帳 − 股息稅 − 代收費</div></div>
+  </div>
+
+  <section>
+    <h2>持倉明細 <span class="dim">（現價 / 市值可即時刷新；成本為券商口徑）</span></h2>
+    <table>
+      <tr><th>標的</th><th class="num">數量</th><th class="num">現價</th><th class="num">成本/股</th>
+          <th class="num">市值</th><th class="num">投入成本</th><th class="num">浮動盈虧</th><th class="num">盈虧率</th></tr>
+      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">10</td><td class="num" id="px-0">$146.030</td><td class="num">$136.300</td><td class="num" id="mv-0">$1,460.30</td><td class="num">$1,363.00</td><td class="num pos" id="fl-0">+$97.30</td><td class="num pos" id="flp-0">+7.14%</td></tr>
+      <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">6</td><td class="num" id="px-1">$214.130</td><td class="num">$236.933</td><td class="num" id="mv-1">$1,284.78</td><td class="num">$1,421.60</td><td class="num neg" id="fl-1">−$136.82</td><td class="num neg" id="flp-1">−9.62%</td></tr>
+      <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$328.750</td><td class="num">$353.547</td><td class="num" id="mv-2">$986.25</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$74.39</td><td class="num neg" id="flp-2">−7.01%</td></tr>
+      <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$921.200</td><td class="num">$928.180</td><td class="num" id="mv-3">$921.20</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$6.98</td><td class="num neg" id="flp-3">−0.75%</td></tr>
+      <tr><td><b>MU</b><br><span class="dim">美光科技</span></td><td class="num">1</td><td class="num" id="px-4">$878.840</td><td class="num">$1,090.800</td><td class="num" id="mv-4">$878.84</td><td class="num">$1,090.80</td><td class="num neg" id="fl-4">−$211.96</td><td class="num neg" id="flp-4">−19.43%</td></tr>
+      <tr><td><b>VRT</b><br><span class="dim">Vertiv</span></td><td class="num">4</td><td class="num" id="px-5">$206.420</td><td class="num">$252.505</td><td class="num" id="mv-5">$825.68</td><td class="num">$1,010.02</td><td class="num neg" id="fl-5">−$184.34</td><td class="num neg" id="flp-5">−18.25%</td></tr>
+      <tr><td><b>TSM</b><br><span class="dim">台積電</span></td><td class="num">2</td><td class="num" id="px-6">$412.610</td><td class="num">$422.840</td><td class="num" id="mv-6">$825.22</td><td class="num">$845.68</td><td class="num neg" id="fl-6">−$20.46</td><td class="num neg" id="flp-6">−2.42%</td></tr>
+      <tr><td><b>ETN</b><br><span class="dim">伊頓</span></td><td class="num">2</td><td class="num" id="px-7">$391.250</td><td class="num">$435.030</td><td class="num" id="mv-7">$782.50</td><td class="num">$870.06</td><td class="num neg" id="fl-7">−$87.56</td><td class="num neg" id="flp-7">−10.06%</td></tr>
+      <tr><td><b>META</b><br><span class="dim">Meta</span></td><td class="num">1</td><td class="num" id="px-8">$709.330</td><td class="num">$747.870</td><td class="num" id="mv-8">$709.33</td><td class="num">$747.87</td><td class="num neg" id="fl-8">−$38.54</td><td class="num neg" id="flp-8">−5.15%</td></tr>
+      <tr><td><b>HOOD</b><br><span class="dim">Robinhood</span></td><td class="num">5</td><td class="num" id="px-9">$98.870</td><td class="num">$111.520</td><td class="num" id="mv-9">$494.35</td><td class="num">$557.60</td><td class="num neg" id="fl-9">−$63.25</td><td class="num neg" id="flp-9">−11.34%</td></tr>
+      <tr><td><b>CRSP</b><br><span class="dim">CRISPR</span></td><td class="num">10</td><td class="num" id="px-10">$49.250</td><td class="num">$53.786</td><td class="num" id="mv-10">$492.50</td><td class="num">$537.86</td><td class="num neg" id="fl-10">−$45.36</td><td class="num neg" id="flp-10">−8.43%</td></tr>
+      <tr><td><b>TEM</b><br><span class="dim">Tempus AI</span></td><td class="num">5</td><td class="num" id="px-11">$64.720</td><td class="num">$55.106</td><td class="num" id="mv-11">$323.60</td><td class="num">$275.53</td><td class="num pos" id="fl-11">+$48.07</td><td class="num pos" id="flp-11">+17.45%</td></tr>
+      <tr><td><b>BEAM</b><br><span class="dim">Beam</span></td><td class="num">10</td><td class="num" id="px-12">$23.470</td><td class="num">$25.715</td><td class="num" id="mv-12">$234.70</td><td class="num">$257.15</td><td class="num neg" id="fl-12">−$22.45</td><td class="num neg" id="flp-12">−8.73%</td></tr>
+      <tr><td><b>SKHY</b><br><span class="dim">SK海力士</span></td><td class="num">1</td><td class="num" id="px-13">$136.490</td><td class="num">$160.900</td><td class="num" id="mv-13">$136.49</td><td class="num">$160.90</td><td class="num neg" id="fl-13">−$24.41</td><td class="num neg" id="flp-13">−15.17%</td></tr>
+    </table>
+  </section>
+  <section>
+    <h2>資金投入（換匯明細）</h2>
+    <table>
+      <tr><th>日期</th><th>項目</th><th class="num">金額</th></tr>
+      <tr><td>2026-07-16</td><td>換匯入金</td><td class="num pos">+$2,541.19</td></tr>
+      <tr><td>2026-08-27</td><td>換匯入金</td><td class="num pos">+$419.71</td></tr>
+      <tr><td>2026-09-04</td><td>換匯入金</td><td class="num pos">+$1,318.10</td></tr>
+      <tr><td>2026-09-25</td><td>換匯入金（HKD→USD）</td><td class="num pos">+$9,826.59</td></tr>
+      <tr><td colspan="2"><b>總投入</b></td><td class="num"><b>$14,105.59</b></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>買入交易明細 <span class="dim">（22 筆）</span></h2>
+    <table>
+      <tr><th>日期</th><th>標的</th><th class="num">成交金額</th><th class="num">手續費</th></tr>
+      <tr><td>2026-07-17</td><td><b>SPCX</b></td><td class="num neg">−$1,363.00</td><td class="num neg">−$1.92</td></tr>
+      <tr><td>2026-07-30</td><td><b>TSM</b></td><td class="num neg">−$377.52</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-08-13</td><td><b>TEM</b></td><td class="num neg">−$275.53</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-08-13</td><td><b>CRSP</b></td><td class="num neg">−$268.81</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-08-17</td><td><b>BEAM</b></td><td class="num neg">−$130.30</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-09-01</td><td><b>AVGO</b></td><td class="num neg">−$367.29</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-02</td><td><b>SKHY</b></td><td class="num neg">−$160.90</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-04</td><td><b>AVGO</b></td><td class="num neg">−$343.96</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-04</td><td><b>VRT</b></td><td class="num neg">−$522.20</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-09</td><td><b>CRSP</b></td><td class="num neg">−$269.05</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-09-09</td><td><b>BEAM</b></td><td class="num neg">−$126.85</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-09-25</td><td><b>ETN</b></td><td class="num neg">−$870.06</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-25</td><td><b>GEV</b></td><td class="num neg">−$928.18</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-29</td><td><b>AVGO</b></td><td class="num neg">−$349.39</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-09-29</td><td><b>VRT</b></td><td class="num neg">−$487.82</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-02</td><td><b>HOOD</b></td><td class="num neg">−$557.60</td><td class="num neg">−$1.91</td></tr>
+      <tr><td>2026-10-05</td><td><b>MU</b></td><td class="num neg">−$1,090.80</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-07</td><td><b>NVDA</b></td><td class="num neg">−$726.07</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-08</td><td><b>NVDA</b></td><td class="num neg">−$475.53</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-09</td><td><b>TSM</b></td><td class="num neg">−$468.16</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-14</td><td><b>META</b></td><td class="num neg">−$747.87</td><td class="num neg">−$1.90</td></tr>
+      <tr><td>2026-10-15</td><td><b>NVDA</b></td><td class="num neg">−$220.00</td><td class="num neg">−$1.90</td></tr>
+      <tr><td colspan="2"><b>合計</b></td><td class="num neg"><b>−$11,126.89</b></td><td class="num neg"><b>−$41.88</b></td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>股息明細</h2>
+    <table>
+      <tr><th>日期</th><th>標的</th><th class="num">股息入帳</th><th class="num">股息稅</th><th class="num">代收費</th><th class="num">淨收入</th></tr>
+      <tr><td>2026-09-25</td><td><b>VRT</b></td><td class="num pos">+$0.12</td><td class="num neg">−$0.04</td><td class="num neg">−$0.01</td><td class="num pos">+$0.07</td></tr>
+      <tr><td>2026-10-02</td><td><b>AVGO</b></td><td class="num pos">+$1.30</td><td class="num neg">−$0.39</td><td class="num neg">−$0.01</td><td class="num pos">+$0.90</td></tr>
+      <tr><td>2026-10-12</td><td><b>TSM</b></td><td class="num pos">+$1.09</td><td class="num neg">−$0.23</td><td class="num neg">−$0.01</td><td class="num pos">+$0.85</td></tr>
+      <tr><td colspan="5"><b>股息淨收入合計</b></td><td class="num pos"><b>+$1.82</b></td></tr>
+    </table>
+    <div class="notes" style="margin-top:10px">股息稅合計 $0.66 · 股息代收費合計 $0.03</div>
+  </section>
+
+  <section>
+    <h2>口徑說明</h2>
+    <div class="notes">
+      <b>總投入</b>＝換匯入金總和 <b>$14,105.59</b>（起始資金＋陸續投入）。<br>
+      <b>投入成本</b>＝買入成交金額合計（不含手續費，與券商持倉成本口徑一致）。<br>
+      <b>浮動盈虧</b>＝持倉市值 − 投入成本。14 檔合計 <b>−$771.15</b>。<br>
+      <b>可用現金</b>＝總投入 − 買入成交 − 買入手續費 + 股息淨收入＝<b>$2,938.64</b>（帳戶內無賣出、無出金）。<br>
+      <b>帳戶總值</b>＝持倉市值 + 可用現金。<b>累計損益</b>＝帳戶總值 − 總投入（含手續費、股息稅費的影響）。<br>
+      行情標籤誠實標示：<b>靜態快照</b>為 2026-10-16 收盤價；<b>即時</b>為瀏覽器直連報價（CNBC 主源、TradingView 備援），並標註報價時間與來源；雙源失敗時保留快照、標示「獲取失敗」。
+    </div>
+  </section>
+
+  <footer>
+    數據來源：券商資金流水截圖（22 筆買入、4 筆換匯、3 筆股息）與持倉截圖（2026-10-17 取得）·
+    持倉股數與每檔買入金額已逐檔交叉核對一致 · 本頁為個人持倉記錄，公開連結請注意隱私。
+  </footer>
+</div>
+<script>
+(function () {
+  /* Live quote refresh: CNBC bulk primary, TradingView per-symbol fallback.
+     Updates price/market/floating per row and the summary cards. */
+  var HOLDINGS = [
+    {s:"SPCX", q:10, cost:1363.00, tv:"NASDAQ"},
+    {s:"NVDA", q:6, cost:1421.60, tv:"NASDAQ"},
+    {s:"AVGO", q:3, cost:1060.64, tv:"NASDAQ"},
+    {s:"GEV", q:1, cost:928.18, tv:"NYSE"},
+    {s:"MU", q:1, cost:1090.80, tv:"NASDAQ"},
+    {s:"VRT", q:4, cost:1010.02, tv:"NYSE"},
+    {s:"TSM", q:2, cost:845.68, tv:"NYSE"},
+    {s:"ETN", q:2, cost:870.06, tv:"NYSE"},
+    {s:"META", q:1, cost:747.87, tv:"NASDAQ"},
+    {s:"HOOD", q:5, cost:557.60, tv:"NASDAQ"},
+    {s:"CRSP", q:10, cost:537.86, tv:"NASDAQ"},
+    {s:"TEM", q:5, cost:275.53, tv:"NASDAQ"},
+    {s:"BEAM", q:10, cost:257.15, tv:"NASDAQ"},
+    {s:"SKHY", q:1, cost:160.90, tv:"NASDAQ"}
+  ];
+  var CASH = 2938.64, TOTAL_IN = 14105.59;
+  var SYMBOLS = HOLDINGS.map(function (h) { return h.s; });
+  var CNBC_URL = "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols="
+    + SYMBOLS.join(",") + "&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json";
+  var btn = document.getElementById("refreshBtn");
+  var tag = document.getElementById("quoteTag");
+  var meta = document.getElementById("quoteMeta");
+  var live = {}; // symbol -> {price, source}
+
+  function money(x, sign) {
+    var neg = x < 0;
+    var a = Math.abs(x).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    var prefix = sign ? (neg ? "\u2212$" : "+$") : (neg ? "\u2212$" : "$");
+    return prefix + a;
+  }
+  function pct(x) {
+    var neg = x < 0;
+    return (neg ? "\u2212" : "+") + Math.abs(x).toFixed(2) + "%";
+  }
+  function cls(x) { return x > 0 ? "pos" : (x < 0 ? "neg" : "zero"); }
+  function numOf(v) {
+    if (typeof v === "number") return v;
+    if (typeof v === "string") { var p = parseFloat(v.replace(/[$,\s%]/g, "")); return isNaN(p) ? NaN : p; }
+    return NaN;
+  }
+  function fetchJson(url, ms) {
+    var c = new AbortController(), t = setTimeout(function () { c.abort(); }, ms || 9000);
+    return fetch(url, { cache: "no-store", signal: c.signal }).then(function (r) {
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      return r.json();
+    }).finally(function () { clearTimeout(t); });
+  }
+  function etParts(d) {
+    var out = {};
+    new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York", weekday: "short",
+      hour: "2-digit", minute: "2-digit", hour12: false }).formatToParts(d)
+      .forEach(function (p) { out[p.type] = p.value; });
+    return out;
+  }
+  function inMarketHours() {
+    var p = etParts(new Date());
+    if (["Sat", "Sun"].indexOf(p.weekday) !== -1) return false;
+    var m = parseInt(p.hour, 10) * 60 + parseInt(p.minute, 10);
+    return m >= 570 && m <= 960;
+  }
+  function setCell(id, text, c) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = text;
+    if (c) el.className = "num " + c;
+  }
+
+  function recompute(liveCount, sources) {
+    var market = 0, floating = 0;
+    HOLDINGS.forEach(function (h, i) {
+      var pxEl = document.getElementById("px-" + i);
+      var p = live[h.s] ? live[h.s].price : numOf(pxEl.textContent);
+      var mv = p * h.q, fl = mv - h.cost, flp = fl / h.cost * 100;
+      market += mv; floating += fl;
+      setCell("px-" + i, "$" + p.toFixed(p < 100 ? 3 : 2));
+      setCell("mv-" + i, money(mv));
+      setCell("fl-" + i, money(fl, true), cls(fl));
+      setCell("flp-" + i, pct(flp), cls(flp));
+    });
+    var account = market + CASH;
+    var pnl = account - TOTAL_IN;
+    var cvM = document.getElementById("cv-market"), cvF = document.getElementById("cv-floating"),
+        cvA = document.getElementById("cv-account"), cvP = document.getElementById("cv-pnl");
+    cvM.textContent = money(market);
+    cvF.textContent = money(floating, true); cvF.className = "card-value " + cls(floating);
+    cvA.textContent = money(account);
+    cvP.textContent = money(pnl, true) + " (" + pct(pnl / TOTAL_IN * 100) + ")";
+    cvP.className = "card-value " + cls(pnl);
+    var p = etParts(new Date());
+    tag.textContent = "即時行情 · " + liveCount + "/14 檔已更新";
+    tag.className = "tag live";
+    meta.textContent = "即時報價 " + p.hour + ":" + p.minute + " ET · 來源 " + sources +
+      " · 快照基準 2026-10-16 收盤 · 頁面更新 2026-10-17";
+  }
+
+  function loadCnbc() {
+    return fetchJson(CNBC_URL, 9000).then(function (data) {
+      var arr = data && data.FormattedQuoteResult && data.FormattedQuoteResult.FormattedQuote;
+      if (!arr) throw new Error("CNBC unavailable");
+      var out = {};
+      arr.forEach(function (q) {
+        var price = numOf(q.last);
+        if (q && q.code === 0 && !isNaN(price)) {
+          out[String(q.symbol || "").toUpperCase()] = { price: price, source: "CNBC 直連" };
+        }
+      });
+      return out;
+    });
+  }
+  function loadTV(h) {
+    var url = "https://scanner.tradingview.com/symbol?symbol=" +
+      encodeURIComponent(h.tv + ":" + h.s) + "&fields=close%2Cchange%2Cvolume";
+    return fetchJson(url, 9000).then(function (data) {
+      var price = numOf(data && data.close);
+      if (isNaN(price)) throw new Error("TV unavailable");
+      return { price: price, source: "TradingView 直連" };
+    });
+  }
+
+  function refresh(silent) {
+    if (btn.disabled) return;
+    btn.disabled = true;
+    var label = btn.textContent;
+    if (!silent) btn.textContent = "\u27F3 正在刷新…";
+    function done() { btn.disabled = false; btn.textContent = label; }
+    loadCnbc().catch(function () { return {}; }).then(function (cnbc) {
+      var missing = HOLDINGS.filter(function (h) { return !cnbc[h.s]; });
+      return Promise.all(missing.map(function (h) {
+        return loadTV(h).then(function (q) { return [h.s, q]; }).catch(function () { return null; });
+      })).then(function (tvResults) {
+        var liveCount = 0, srcSet = {};
+        SYMBOLS.forEach(function (s) {
+          var q = cnbc[s];
+          if (!q) {
+            var hit = tvResults.filter(function (r) { return r && r[0] === s; })[0];
+            if (hit) q = hit[1];
+          }
+          if (q) { live[s] = q; liveCount++; srcSet[q.source] = true; }
+        });
+        if (liveCount === 0) {
+          tag.textContent = "即時行情獲取失敗，點擊重試";
+          tag.className = "tag warn";
+          meta.textContent = "未取得即時行情，顯示 2026-10-16 收盤快照";
+        } else {
+          recompute(liveCount, Object.keys(srcSet).join("＋"));
+        }
+        done();
+      });
+    }).catch(function () {
+      tag.textContent = "即時行情獲取失敗，點擊重試";
+      tag.className = "tag warn";
+      done();
+    });
+  }
+
+  btn.addEventListener("click", function () { refresh(false); });
+  refresh(true);
+  setInterval(function () { if (inMarketHours()) refresh(true); }, 15 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
