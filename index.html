@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>美股持倉損益 Dashboard</title>
 <style>
   :root { --bg:#f6f7f9; --surface:#fff; --text:#1a1d21; --dim:#6b7280; --line:#e5e7eb;
@@ -316,6 +319,43 @@
   btn.addEventListener("click", function () { refresh(false); });
   refresh(true);
   setInterval(function () { if (inMarketHours()) refresh(true); }, 15 * 60 * 1000);
+})();
+</script>
+<script>
+/* Cross-device cache busting: version.json is rewritten on every daily deploy.
+   If the published snapshot is newer than this page's embedded one, reload once;
+   if still stale afterwards, show a banner with a manual refresh button. */
+(function () {
+  var PAGE_ASOF = "2026-10-16";
+  var KEY = "pnl_ver_" + PAGE_ASOF;
+  function showBanner(asof) {
+    if (document.getElementById("verBanner")) return;
+    var d = document.createElement("div");
+    d.id = "verBanner";
+    d.style.cssText = "position:fixed;top:0;left:0;right:0;z-index:9999;background:#1a56db;color:#fff;text-align:center;padding:10px 14px;font-size:14px;";
+    var btn = document.createElement("button");
+    btn.textContent = "點擊刷新";
+    btn.style.cssText = "margin-left:8px;padding:4px 14px;border-radius:6px;border:none;background:#fff;color:#1a56db;font-weight:700;cursor:pointer;";
+    btn.addEventListener("click", function () { location.reload(); });
+    d.appendChild(document.createTextNode("檢測到新版本（" + asof + " 收盤快照），"));
+    d.appendChild(btn);
+    document.body.insertBefore(d, document.body.firstChild);
+  }
+  fetch("version.json?v=" + Date.now(), { cache: "no-store" })
+    .then(function (r) { if (!r.ok) throw new Error("no version"); return r.json(); })
+    .then(function (v) {
+      if (v && v.asof && v.asof !== PAGE_ASOF) {
+        var reloaded = false;
+        try { reloaded = !!sessionStorage.getItem(KEY); } catch (e) {}
+        if (!reloaded) {
+          try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+          location.reload();
+        } else {
+          showBanner(v.asof);
+        }
+      }
+    })
+    .catch(function () { /* offline or first deploy without version.json: stay silent */ });
 })();
 </script>
 </body>
