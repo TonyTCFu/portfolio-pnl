@@ -49,18 +49,18 @@
 <div class="wrap">
   <header>
     <h1>美股持倉損益 Dashboard</h1>
-    <span class="tag" id="quoteTag">持倉數據：2026-10-19 美股收盤</span>
+    <span class="tag" id="quoteTag">持倉數據：2026-10-20 美股收盤</span>
     <button class="btn" id="refreshBtn">⟳ 刷新行情</button>
   </header>
-  <div class="meta" id="quoteMeta">靜態快照（2026-10-19 收盤價）· 頁面更新 2026-10-20 · 數據來源：券商資金流水與持倉截圖</div>
+  <div class="meta" id="quoteMeta">靜態快照（2026-10-20 收盤價）· 頁面更新 2026-10-21 · 數據來源：券商資金流水與持倉截圖</div>
 
   <div class="grid">
     <div class="card"><div class="card-label">總投入（換匯）</div><div class="card-value">$14,105.59</div><div class="card-note">全部換匯入金合計</div></div>
-    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$10,441.92</div><div class="card-note">14 檔持倉現價合計</div></div>
+    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$10,401.53</div><div class="card-note">14 檔持倉現價合計</div></div>
     <div class="card"><div class="card-label">可用現金</div><div class="card-value">$2,938.64</div><div class="card-note">總投入 − 買入 − 手續費 + 股息淨收入</div></div>
-    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$684.97</div><div class="card-note">持倉市值 − 投入成本</div></div>
-    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$13,380.56</div><div class="card-note">持倉市值 + 可用現金</div></div>
-    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$725.03 (−5.14%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
+    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$725.36</div><div class="card-note">持倉市值 − 投入成本</div></div>
+    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$13,340.17</div><div class="card-note">持倉市值 + 可用現金</div></div>
+    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$765.42 (−5.43%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
     <div class="card"><div class="card-label">交易手續費</div><div class="card-value">$41.88</div><div class="card-note">22 筆買入手續費合計</div></div>
     <div class="card"><div class="card-label">股息淨收入</div><div class="card-value pos">+$1.82</div><div class="card-note">股息入帳 − 股息稅 − 代收費</div></div>
   </div>
@@ -70,20 +70,20 @@
     <table>
       <tr><th>標的</th><th class="num">數量</th><th class="num">現價</th><th class="num">成本/股</th>
           <th class="num">市值</th><th class="num">投入成本</th><th class="num">浮動盈虧</th><th class="num">盈虧率</th></tr>
-      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">10</td><td class="num" id="px-0">$147.960</td><td class="num">$136.300</td><td class="num" id="mv-0">$1,479.60</td><td class="num">$1,363.00</td><td class="num pos" id="fl-0">+$116.60</td><td class="num pos" id="flp-0">+8.55%</td></tr>
-      <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">6</td><td class="num" id="px-1">$217.090</td><td class="num">$236.933</td><td class="num" id="mv-1">$1,302.54</td><td class="num">$1,421.60</td><td class="num neg" id="fl-1">−$119.06</td><td class="num neg" id="flp-1">−8.38%</td></tr>
-      <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$334.590</td><td class="num">$353.547</td><td class="num" id="mv-2">$1,003.77</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$56.87</td><td class="num neg" id="flp-2">−5.36%</td></tr>
-      <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$908.440</td><td class="num">$928.180</td><td class="num" id="mv-3">$908.44</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$19.74</td><td class="num neg" id="flp-3">−2.13%</td></tr>
-      <tr><td><b>MU</b><br><span class="dim">美光科技</span></td><td class="num">1</td><td class="num" id="px-4">$904.900</td><td class="num">$1,090.800</td><td class="num" id="mv-4">$904.90</td><td class="num">$1,090.80</td><td class="num neg" id="fl-4">−$185.90</td><td class="num neg" id="flp-4">−17.04%</td></tr>
-      <tr><td><b>VRT</b><br><span class="dim">Vertiv</span></td><td class="num">4</td><td class="num" id="px-5">$206.080</td><td class="num">$252.505</td><td class="num" id="mv-5">$824.32</td><td class="num">$1,010.02</td><td class="num neg" id="fl-5">−$185.70</td><td class="num neg" id="flp-5">−18.39%</td></tr>
-      <tr><td><b>TSM</b><br><span class="dim">台積電</span></td><td class="num">2</td><td class="num" id="px-6">$420.220</td><td class="num">$422.840</td><td class="num" id="mv-6">$840.44</td><td class="num">$845.68</td><td class="num neg" id="fl-6">−$5.24</td><td class="num neg" id="flp-6">−0.62%</td></tr>
-      <tr><td><b>ETN</b><br><span class="dim">伊頓</span></td><td class="num">2</td><td class="num" id="px-7">$391.500</td><td class="num">$435.030</td><td class="num" id="mv-7">$783.00</td><td class="num">$870.06</td><td class="num neg" id="fl-7">−$87.06</td><td class="num neg" id="flp-7">−10.01%</td></tr>
-      <tr><td><b>META</b><br><span class="dim">Meta</span></td><td class="num">1</td><td class="num" id="px-8">$705.440</td><td class="num">$747.870</td><td class="num" id="mv-8">$705.44</td><td class="num">$747.87</td><td class="num neg" id="fl-8">−$42.43</td><td class="num neg" id="flp-8">−5.67%</td></tr>
-      <tr><td><b>HOOD</b><br><span class="dim">Robinhood</span></td><td class="num">5</td><td class="num" id="px-9">$96.520</td><td class="num">$111.520</td><td class="num" id="mv-9">$482.60</td><td class="num">$557.60</td><td class="num neg" id="fl-9">−$75.00</td><td class="num neg" id="flp-9">−13.45%</td></tr>
-      <tr><td><b>CRSP</b><br><span class="dim">CRISPR</span></td><td class="num">10</td><td class="num" id="px-10">$50.040</td><td class="num">$53.786</td><td class="num" id="mv-10">$500.40</td><td class="num">$537.86</td><td class="num neg" id="fl-10">−$37.46</td><td class="num neg" id="flp-10">−6.96%</td></tr>
-      <tr><td><b>TEM</b><br><span class="dim">Tempus AI</span></td><td class="num">5</td><td class="num" id="px-11">$64.340</td><td class="num">$55.106</td><td class="num" id="mv-11">$321.70</td><td class="num">$275.53</td><td class="num pos" id="fl-11">+$46.17</td><td class="num pos" id="flp-11">+16.76%</td></tr>
-      <tr><td><b>BEAM</b><br><span class="dim">Beam</span></td><td class="num">10</td><td class="num" id="px-12">$24.190</td><td class="num">$25.715</td><td class="num" id="mv-12">$241.90</td><td class="num">$257.15</td><td class="num neg" id="fl-12">−$15.25</td><td class="num neg" id="flp-12">−5.93%</td></tr>
-      <tr><td><b>SKHY</b><br><span class="dim">SK海力士</span></td><td class="num">1</td><td class="num" id="px-13">$142.870</td><td class="num">$160.900</td><td class="num" id="mv-13">$142.87</td><td class="num">$160.90</td><td class="num neg" id="fl-13">−$18.03</td><td class="num neg" id="flp-13">−11.21%</td></tr>
+      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">10</td><td class="num" id="px-0">$147.790</td><td class="num">$136.300</td><td class="num" id="mv-0">$1,477.90</td><td class="num">$1,363.00</td><td class="num pos" id="fl-0">+$114.90</td><td class="num pos" id="flp-0">+8.43%</td></tr>
+      <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">6</td><td class="num" id="px-1">$216.470</td><td class="num">$236.933</td><td class="num" id="mv-1">$1,298.82</td><td class="num">$1,421.60</td><td class="num neg" id="fl-1">−$122.78</td><td class="num neg" id="flp-1">−8.64%</td></tr>
+      <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$334.370</td><td class="num">$353.547</td><td class="num" id="mv-2">$1,003.11</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$57.53</td><td class="num neg" id="flp-2">−5.42%</td></tr>
+      <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$890.330</td><td class="num">$928.180</td><td class="num" id="mv-3">$890.33</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$37.85</td><td class="num neg" id="flp-3">−4.08%</td></tr>
+      <tr><td><b>MU</b><br><span class="dim">美光科技</span></td><td class="num">1</td><td class="num" id="px-4">$896.070</td><td class="num">$1,090.800</td><td class="num" id="mv-4">$896.07</td><td class="num">$1,090.80</td><td class="num neg" id="fl-4">−$194.73</td><td class="num neg" id="flp-4">−17.85%</td></tr>
+      <tr><td><b>VRT</b><br><span class="dim">Vertiv</span></td><td class="num">4</td><td class="num" id="px-5">$203.560</td><td class="num">$252.505</td><td class="num" id="mv-5">$814.24</td><td class="num">$1,010.02</td><td class="num neg" id="fl-5">−$195.78</td><td class="num neg" id="flp-5">−19.38%</td></tr>
+      <tr><td><b>TSM</b><br><span class="dim">台積電</span></td><td class="num">2</td><td class="num" id="px-6">$425.080</td><td class="num">$422.840</td><td class="num" id="mv-6">$850.16</td><td class="num">$845.68</td><td class="num neg" id="fl-6">+$4.48</td><td class="num neg" id="flp-6">+0.53%</td></tr>
+      <tr><td><b>ETN</b><br><span class="dim">伊頓</span></td><td class="num">2</td><td class="num" id="px-7">$381.980</td><td class="num">$435.030</td><td class="num" id="mv-7">$763.96</td><td class="num">$870.06</td><td class="num neg" id="fl-7">−$106.10</td><td class="num neg" id="flp-7">−12.19%</td></tr>
+      <tr><td><b>META</b><br><span class="dim">Meta</span></td><td class="num">1</td><td class="num" id="px-8">$694.250</td><td class="num">$747.870</td><td class="num" id="mv-8">$694.25</td><td class="num">$747.87</td><td class="num neg" id="fl-8">−$53.62</td><td class="num neg" id="flp-8">−7.17%</td></tr>
+      <tr><td><b>HOOD</b><br><span class="dim">Robinhood</span></td><td class="num">5</td><td class="num" id="px-9">$98.210</td><td class="num">$111.520</td><td class="num" id="mv-9">$491.05</td><td class="num">$557.60</td><td class="num neg" id="fl-9">−$66.55</td><td class="num neg" id="flp-9">−11.94%</td></tr>
+      <tr><td><b>CRSP</b><br><span class="dim">CRISPR</span></td><td class="num">10</td><td class="num" id="px-10">$49.880</td><td class="num">$53.786</td><td class="num" id="mv-10">$498.80</td><td class="num">$537.86</td><td class="num neg" id="fl-10">−$39.06</td><td class="num neg" id="flp-10">−7.26%</td></tr>
+      <tr><td><b>TEM</b><br><span class="dim">Tempus AI</span></td><td class="num">5</td><td class="num" id="px-11">$66.750</td><td class="num">$55.106</td><td class="num" id="mv-11">$333.75</td><td class="num">$275.53</td><td class="num pos" id="fl-11">+$58.22</td><td class="num pos" id="flp-11">+21.13%</td></tr>
+      <tr><td><b>BEAM</b><br><span class="dim">Beam</span></td><td class="num">10</td><td class="num" id="px-12">$24.930</td><td class="num">$25.715</td><td class="num" id="mv-12">$249.30</td><td class="num">$257.15</td><td class="num neg" id="fl-12">−$7.85</td><td class="num neg" id="flp-12">−3.05%</td></tr>
+      <tr><td><b>SKHY</b><br><span class="dim">SK海力士</span></td><td class="num">1</td><td class="num" id="px-13">$139.790</td><td class="num">$160.900</td><td class="num" id="mv-13">$139.79</td><td class="num">$160.90</td><td class="num neg" id="fl-13">−$21.11</td><td class="num neg" id="flp-13">−13.12%</td></tr>
     </table>
   </section>
   <section>
@@ -145,7 +145,7 @@
     <div class="notes">
       <b>總投入</b>＝換匯入金總和 <b>$14,105.59</b>（起始資金＋陸續投入）。<br>
       <b>投入成本</b>＝買入成交金額合計（不含手續費，與券商持倉成本口徑一致）。<br>
-      <b>浮動盈虧</b>＝持倉市值 − 投入成本。14 檔合計 <b>−$684.97</b>。<br>
+      <b>浮動盈虧</b>＝持倉市值 − 投入成本。14 檔合計 <b>−$725.36</b>。<br>
       <b>可用現金</b>＝總投入 − 買入成交 − 買入手續費 + 股息淨收入＝<b>$2,938.64</b>（帳戶內無賣出、無出金）。<br>
       <b>帳戶總值</b>＝持倉市值 + 可用現金。<b>累計損益</b>＝帳戶總值 − 總投入（含手續費、股息稅費的影響）。<br>
       行情標籤誠實標示：<b>靜態快照</b>為收盤價；<b>即時</b>為瀏覽器直連報價（CNBC 主源、TradingView 備援），開頁自動刷新、盤中每 30 分鐘自動刷新，也可手動點擊刷新；雙源失敗時保留快照、標示「獲取失敗」。
@@ -333,7 +333,7 @@
    If the published snapshot is newer than this page's embedded one, reload once;
    if still stale afterwards, show a banner with a manual refresh button. */
 (function () {
-  var PAGE_ASOF = "2026-10-19";
+  var PAGE_ASOF = "2026-10-20";
   var KEY = "pnl_ver_" + PAGE_ASOF;
   function showBanner(asof) {
     if (document.getElementById("verBanner")) return;
