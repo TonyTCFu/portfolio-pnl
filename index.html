@@ -49,19 +49,19 @@
 <div class="wrap">
   <header>
     <h1>美股持倉損益 Dashboard</h1>
-    <span class="tag" id="quoteTag">持倉數據：2026-10-23 美股收盤</span>
+    <span class="tag" id="quoteTag">持倉數據：2026-10-26 美股收盤</span>
     <button class="btn" id="refreshBtn">⟳ 刷新行情</button>
   </header>
-  <div class="meta" id="quoteMeta">靜態快照（2026-10-23 收盤價）· 頁面更新 2026-10-24 · 數據來源：券商資金流水與持倉截圖</div>
+  <div class="meta" id="quoteMeta">靜態快照（2026-10-26 收盤價）· 頁面更新 2026-10-27 · 數據來源：券商資金流水與持倉截圖</div>
 
   <div class="grid">
     <div class="card"><div class="card-label">總投入（換匯）</div><div class="card-value">$14,693.28</div><div class="card-note">換匯入金 $14,105.59 ＋ 6月 SpaceX 買入資金 $587.69（合併計入）</div></div>
-    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$11,343.74</div><div class="card-note">15 檔持倉現價合計</div></div>
+    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$11,489.31</div><div class="card-note">15 檔持倉現價合計</div></div>
     <div class="card"><div class="card-label">可用現金</div><div class="card-value">$2,067.92</div><div class="card-note">總投入 − 買入 + 賣出 − 手續費 + 股息淨收入</div></div>
-    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$1,023.05</div><div class="card-note">持倉市值 − 投入成本</div></div>
+    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$877.47</div><div class="card-note">持倉市值 − 投入成本</div></div>
     <div class="card"><div class="card-label">已實現損益</div><div class="card-value neg">−$207.10</div><div class="card-note">VRT 平倉：賣出 $802.92 − 成本 $1,010.02</div></div>
-    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$13,411.66</div><div class="card-note">持倉市值 + 可用現金</div></div>
-    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$1,281.62 (−8.72%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
+    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$13,557.23</div><div class="card-note">持倉市值 + 可用現金</div></div>
+    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$1,136.05 (−7.73%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
     <div class="card"><div class="card-label">交易手續費</div><div class="card-value">$53.30</div><div class="card-note">29 筆買入 + 1 筆賣出手續費合計（6月兩筆手續費未提供，未計）</div></div>
     <div class="card"><div class="card-label">股息淨收入</div><div class="card-value pos">+$1.82</div><div class="card-note">股息入帳 − 股息稅 − 代收費</div></div>
   </div>
@@ -71,21 +71,21 @@
     <table>
       <tr><th>標的</th><th class="num">數量</th><th class="num">現價</th><th class="num">成本/股</th>
           <th class="num">市值</th><th class="num">投入成本</th><th class="num">浮動盈虧</th><th class="num">盈虧率</th></tr>
-      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">13</td><td class="num" id="px-0">$147.490</td><td class="num">$150.053</td><td class="num" id="mv-0">$1,917.37</td><td class="num">$1,950.69</td><td class="num neg" id="fl-0">−$33.32</td><td class="num neg" id="flp-0">−1.71%</td></tr>
-      <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">8</td><td class="num" id="px-1">$210.960</td><td class="num">$231.835</td><td class="num" id="mv-1">$1,687.68</td><td class="num">$1,854.68</td><td class="num neg" id="fl-1">−$167.00</td><td class="num neg" id="flp-1">−9.00%</td></tr>
-      <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$321.680</td><td class="num">$353.547</td><td class="num" id="mv-2">$965.04</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$95.60</td><td class="num neg" id="flp-2">−9.01%</td></tr>
-      <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$815.000</td><td class="num">$928.180</td><td class="num" id="mv-3">$815.00</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$113.18</td><td class="num neg" id="flp-3">−12.19%</td></tr>
-      <tr><td><b>MU</b><br><span class="dim">美光科技</span></td><td class="num">1</td><td class="num" id="px-4">$877.550</td><td class="num">$1090.800</td><td class="num" id="mv-4">$877.55</td><td class="num">$1,090.80</td><td class="num neg" id="fl-4">−$213.25</td><td class="num neg" id="flp-4">−19.55%</td></tr>
-      <tr><td><b>TSM</b><br><span class="dim">台積電</span></td><td class="num">3</td><td class="num" id="px-5">$418.510</td><td class="num">$421.487</td><td class="num" id="mv-5">$1,255.53</td><td class="num">$1,264.46</td><td class="num pos" id="fl-5">−$8.93</td><td class="num pos" id="flp-5">−0.71%</td></tr>
-      <tr><td><b>ETN</b><br><span class="dim">伊頓</span></td><td class="num">2</td><td class="num" id="px-6">$366.110</td><td class="num">$435.030</td><td class="num" id="mv-6">$732.22</td><td class="num">$870.06</td><td class="num neg" id="fl-6">−$137.84</td><td class="num neg" id="flp-6">−15.84%</td></tr>
-      <tr><td><b>META</b><br><span class="dim">Meta</span></td><td class="num">1</td><td class="num" id="px-7">$642.620</td><td class="num">$747.870</td><td class="num" id="mv-7">$642.62</td><td class="num">$747.87</td><td class="num neg" id="fl-7">−$105.25</td><td class="num neg" id="flp-7">−14.07%</td></tr>
-      <tr><td><b>HOOD</b><br><span class="dim">Robinhood</span></td><td class="num">5</td><td class="num" id="px-8">$95.070</td><td class="num">$111.520</td><td class="num" id="mv-8">$475.35</td><td class="num">$557.60</td><td class="num neg" id="fl-8">−$82.25</td><td class="num neg" id="flp-8">−14.75%</td></tr>
-      <tr><td><b>CRSP</b><br><span class="dim">CRISPR</span></td><td class="num">10</td><td class="num" id="px-9">$49.390</td><td class="num">$53.786</td><td class="num" id="mv-9">$493.90</td><td class="num">$537.86</td><td class="num neg" id="fl-9">−$43.96</td><td class="num neg" id="flp-9">−8.17%</td></tr>
-      <tr><td><b>VRT</b><br><span class="dim">Vertiv</span></td><td class="num">2</td><td class="num" id="px-10">$194.320</td><td class="num">$201.180</td><td class="num" id="mv-10">$388.64</td><td class="num">$402.36</td><td class="num neg" id="fl-10">−$13.72</td><td class="num neg" id="flp-10">−3.41%</td></tr>
-      <tr><td><b>AMAT</b><br><span class="dim">應用材料</span></td><td class="num">1</td><td class="num" id="px-11">$377.240</td><td class="num">$408.000</td><td class="num" id="mv-11">$377.24</td><td class="num">$408.00</td><td class="num pos" id="fl-11">−$30.76</td><td class="num pos" id="flp-11">−7.54%</td></tr>
-      <tr><td><b>TEM</b><br><span class="dim">Tempus AI</span></td><td class="num">5</td><td class="num" id="px-12">$67.615</td><td class="num">$55.106</td><td class="num" id="mv-12">$338.07</td><td class="num">$275.53</td><td class="num pos" id="fl-12">+$62.55</td><td class="num pos" id="flp-12">+22.70%</td></tr>
-      <tr><td><b>BEAM</b><br><span class="dim">Beam</span></td><td class="num">10</td><td class="num" id="px-13">$24.050</td><td class="num">$25.715</td><td class="num" id="mv-13">$240.50</td><td class="num">$257.15</td><td class="num neg" id="fl-13">−$16.65</td><td class="num neg" id="flp-13">−6.47%</td></tr>
-      <tr><td><b>SKHY</b><br><span class="dim">SK海力士</span></td><td class="num">1</td><td class="num" id="px-14">$137.020</td><td class="num">$160.900</td><td class="num" id="mv-14">$137.02</td><td class="num">$160.90</td><td class="num neg" id="fl-14">−$23.88</td><td class="num neg" id="flp-14">−14.84%</td></tr>
+      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">13</td><td class="num" id="px-0">$146.900</td><td class="num">$150.053</td><td class="num" id="mv-0">$1,909.70</td><td class="num">$1,950.69</td><td class="num neg" id="fl-0">−$40.99</td><td class="num neg" id="flp-0">−2.10%</td></tr>
+      <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">8</td><td class="num" id="px-1">$216.000</td><td class="num">$231.835</td><td class="num" id="mv-1">$1,728.00</td><td class="num">$1,854.68</td><td class="num neg" id="fl-1">−$126.68</td><td class="num neg" id="flp-1">−6.83%</td></tr>
+      <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$329.170</td><td class="num">$353.547</td><td class="num" id="mv-2">$987.51</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$73.13</td><td class="num neg" id="flp-2">−6.89%</td></tr>
+      <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$855.120</td><td class="num">$928.180</td><td class="num" id="mv-3">$855.12</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$73.06</td><td class="num neg" id="flp-3">−7.87%</td></tr>
+      <tr><td><b>MU</b><br><span class="dim">美光科技</span></td><td class="num">1</td><td class="num" id="px-4">$903.700</td><td class="num">$1090.800</td><td class="num" id="mv-4">$903.70</td><td class="num">$1,090.80</td><td class="num neg" id="fl-4">−$187.10</td><td class="num neg" id="flp-4">−17.15%</td></tr>
+      <tr><td><b>TSM</b><br><span class="dim">台積電</span></td><td class="num">3</td><td class="num" id="px-5">$424.370</td><td class="num">$421.487</td><td class="num" id="mv-5">$1,273.11</td><td class="num">$1,264.46</td><td class="num pos" id="fl-5">+$8.65</td><td class="num pos" id="flp-5">+0.68%</td></tr>
+      <tr><td><b>ETN</b><br><span class="dim">伊頓</span></td><td class="num">2</td><td class="num" id="px-6">$371.920</td><td class="num">$435.030</td><td class="num" id="mv-6">$743.84</td><td class="num">$870.06</td><td class="num neg" id="fl-6">−$126.22</td><td class="num neg" id="flp-6">−14.51%</td></tr>
+      <tr><td><b>META</b><br><span class="dim">Meta</span></td><td class="num">1</td><td class="num" id="px-7">$630.560</td><td class="num">$747.870</td><td class="num" id="mv-7">$630.56</td><td class="num">$747.87</td><td class="num neg" id="fl-7">−$117.31</td><td class="num neg" id="flp-7">−15.69%</td></tr>
+      <tr><td><b>HOOD</b><br><span class="dim">Robinhood</span></td><td class="num">5</td><td class="num" id="px-8">$92.840</td><td class="num">$111.520</td><td class="num" id="mv-8">$464.20</td><td class="num">$557.60</td><td class="num neg" id="fl-8">−$93.40</td><td class="num neg" id="flp-8">−16.75%</td></tr>
+      <tr><td><b>CRSP</b><br><span class="dim">CRISPR</span></td><td class="num">10</td><td class="num" id="px-9">$49.010</td><td class="num">$53.786</td><td class="num" id="mv-9">$490.10</td><td class="num">$537.86</td><td class="num neg" id="fl-9">−$47.76</td><td class="num neg" id="flp-9">−8.88%</td></tr>
+      <tr><td><b>VRT</b><br><span class="dim">Vertiv</span></td><td class="num">2</td><td class="num" id="px-10">$199.780</td><td class="num">$201.180</td><td class="num" id="mv-10">$399.56</td><td class="num">$402.36</td><td class="num neg" id="fl-10">−$2.80</td><td class="num neg" id="flp-10">−0.70%</td></tr>
+      <tr><td><b>AMAT</b><br><span class="dim">應用材料</span></td><td class="num">1</td><td class="num" id="px-11">$387.590</td><td class="num">$408.000</td><td class="num" id="mv-11">$387.59</td><td class="num">$408.00</td><td class="num pos" id="fl-11">−$20.41</td><td class="num pos" id="flp-11">−5.00%</td></tr>
+      <tr><td><b>TEM</b><br><span class="dim">Tempus AI</span></td><td class="num">5</td><td class="num" id="px-12">$67.160</td><td class="num">$55.106</td><td class="num" id="mv-12">$335.80</td><td class="num">$275.53</td><td class="num pos" id="fl-12">+$60.27</td><td class="num pos" id="flp-12">+21.87%</td></tr>
+      <tr><td><b>BEAM</b><br><span class="dim">Beam</span></td><td class="num">10</td><td class="num" id="px-13">$23.790</td><td class="num">$25.715</td><td class="num" id="mv-13">$237.90</td><td class="num">$257.15</td><td class="num neg" id="fl-13">−$19.25</td><td class="num neg" id="flp-13">−7.49%</td></tr>
+      <tr><td><b>SKHY</b><br><span class="dim">SK海力士</span></td><td class="num">1</td><td class="num" id="px-14">$142.620</td><td class="num">$160.900</td><td class="num" id="mv-14">$142.62</td><td class="num">$160.90</td><td class="num neg" id="fl-14">−$18.28</td><td class="num neg" id="flp-14">−11.36%</td></tr>
     </table>
   </section>
   <section>
@@ -164,7 +164,7 @@
     <div class="notes">
       <b>總投入</b>＝換匯入金總和 <b>$14,105.59</b> ＋ 2026-06 SpaceX 早期買入資金 <b>$587.69</b>（2026-10-21 用戶確認合併計入）＝<b>$14,693.28</b>。<br>
       <b>投入成本</b>＝買入成交金額合計（不含手續費，與券商持倉成本口徑一致）。<br>
-      <b>浮動盈虧</b>＝持倉市值 − 投入成本。15 檔合計 <b>−$1,023.05</b>。<br>
+      <b>浮動盈虧</b>＝持倉市值 − 投入成本。15 檔合計 <b>−$877.47</b>。<br>
       <b>已實現損益</b>＝賣出成交金額 − 該持倉投入成本；本期 VRT 平倉 <b>−$207.10</b>（賣出手續費計入交易手續費）。<br>
       <b>可用現金</b>＝總投入 − 買入成交 + 賣出成交 − 買賣手續費 + 股息淨收入＝<b>$2,067.92</b>（帳戶內無出金）。<br>
       <b>帳戶總值</b>＝持倉市值 + 可用現金。<b>累計損益</b>＝帳戶總值 − 總投入（含手續費、股息稅費的影響）。<br>
@@ -354,7 +354,7 @@
    If the published snapshot is newer than this page's embedded one, reload once;
    if still stale afterwards, show a banner with a manual refresh button. */
 (function () {
-  var PAGE_ASOF = "2026-10-23";
+  var PAGE_ASOF = "2026-10-26";
   var KEY = "pnl_ver_" + PAGE_ASOF;
   function showBanner(asof) {
     if (document.getElementById("verBanner")) return;
