@@ -52,17 +52,17 @@
     <span class="tag" id="quoteTag">持倉數據：2026-11-19 美股收盤</span>
     <button class="btn" id="refreshBtn">⟳ 刷新行情</button>
   </header>
-  <div class="meta" id="quoteMeta">靜態快照（2026-11-19 收盤價）· 頁面更新 2026-11-20 · 數據來源：券商資金流水與持倉截圖</div>
+  <div class="meta" id="quoteMeta">靜態快照（2026-11-19 收盤價）· 頁面更新 2026-11-21 · 數據來源：券商資金流水與持倉截圖</div>
 
   <div class="grid">
     <div class="card"><div class="card-label">總投入（換匯）</div><div class="card-value">$14,693.28</div><div class="card-note">換匯入金 $14,105.59 ＋ 6月 SpaceX 買入資金 $587.69（合併計入）</div></div>
-    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$9,953.27</div><div class="card-note">13 檔持倉現價合計</div></div>
-    <div class="card"><div class="card-label">可用現金</div><div class="card-value">$1,997.66</div><div class="card-note">總投入 − 買入 + 賣出 − 手續費 + 股息淨收入</div></div>
-    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$2,234.17</div><div class="card-note">持倉市值 − 投入成本</div></div>
+    <div class="card"><div class="card-label">持倉市值</div><div class="card-value" id="cv-market">$10,645.42</div><div class="card-note">13 檔持倉現價合計</div></div>
+    <div class="card"><div class="card-label">可用現金</div><div class="card-value">$1,345.75</div><div class="card-note">總投入 − 買入 + 賣出 − 手續費 + 股息淨收入</div></div>
+    <div class="card"><div class="card-label">浮動盈虧</div><div class="card-value neg" id="cv-floating">−$2,192.02</div><div class="card-note">持倉市值 − 投入成本</div></div>
     <div class="card"><div class="card-label">已實現損益</div><div class="card-value neg">−$439.62</div><div class="card-note">VRT −$207.10、TEM +$103.35、BEAM +$5.93、META −$129.33、NVDA −$212.46</div></div>
-    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$11,950.93</div><div class="card-note">持倉市值 + 可用現金</div></div>
-    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$2,742.35 (−18.66%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
-    <div class="card"><div class="card-label">交易手續費</div><div class="card-value">$70.48</div><div class="card-note">34 筆買入 + 5 筆賣出手續費合計（6月兩筆手續費未提供，未計；明細見下方手續費明細）</div></div>
+    <div class="card"><div class="card-label">帳戶總值</div><div class="card-value" id="cv-account">$11,991.17</div><div class="card-note">持倉市值 + 可用現金</div></div>
+    <div class="card"><div class="card-label">累計損益</div><div class="card-value neg" id="cv-pnl">−$2,702.11 (−18.39%)</div><div class="card-note">帳戶總值 − 總投入</div></div>
+    <div class="card"><div class="card-label">交易手續費</div><div class="card-value">$72.39</div><div class="card-note">35 筆買入 + 5 筆賣出手續費合計（6月兩筆手續費未提供，未計；明細見下方手續費明細）</div></div>
     <div class="card"><div class="card-label">股息淨收入</div><div class="card-value pos">+$1.91</div><div class="card-note">股息入帳 − 股息稅 − 代收費</div></div>
   </div>
 
@@ -71,7 +71,7 @@
     <table>
       <tr><th>標的</th><th class="num">數量</th><th class="num">現價</th><th class="num">成本/股</th>
           <th class="num">市值</th><th class="num">投入成本</th><th class="num">浮動盈虧</th><th class="num">盈虧率</th></tr>
-      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">13</td><td class="num" id="px-0">$138.430</td><td class="num">$150.053</td><td class="num" id="mv-0">$1,799.59</td><td class="num">$1,950.69</td><td class="num neg" id="fl-0">−$151.10</td><td class="num neg" id="flp-0">−7.75%</td></tr>
+      <tr><td><b>SPCX</b><br><span class="dim">SpaceX</span></td><td class="num">18</td><td class="num" id="px-0">$138.430</td><td class="num">$144.483</td><td class="num" id="mv-0">$2,491.74</td><td class="num">$2,600.69</td><td class="num neg" id="fl-0">−$108.95</td><td class="num neg" id="flp-0">−4.19%</td></tr>
       <tr><td><b>NVDA</b><br><span class="dim">英偉達</span></td><td class="num">6</td><td class="num" id="px-1">$145.980</td><td class="num">$208.100</td><td class="num" id="mv-1">$875.88</td><td class="num">$1,248.60</td><td class="num neg" id="fl-1">−$372.72</td><td class="num neg" id="flp-1">−29.85%</td></tr>
       <tr><td><b>AVGO</b><br><span class="dim">博通</span></td><td class="num">3</td><td class="num" id="px-2">$346.650</td><td class="num">$353.547</td><td class="num" id="mv-2">$1,039.95</td><td class="num">$1,060.64</td><td class="num neg" id="fl-2">−$20.69</td><td class="num neg" id="flp-2">−1.95%</td></tr>
       <tr><td><b>GEV</b><br><span class="dim">GE Vernova</span></td><td class="num">1</td><td class="num" id="px-3">$756.280</td><td class="num">$928.180</td><td class="num" id="mv-3">$756.28</td><td class="num">$928.18</td><td class="num neg" id="fl-3">−$171.90</td><td class="num neg" id="flp-3">−18.52%</td></tr>
@@ -100,7 +100,7 @@
   </section>
 
   <section>
-    <h2>買入交易明細 <span class="dim">（34 筆）</span></h2>
+    <h2>買入交易明細 <span class="dim">（35 筆）</span></h2>
     <table>
       <tr><th>日期</th><th>標的</th><th class="num">成交金額</th><th class="num">手續費</th></tr>
       <tr><td>2026-06-16</td><td><b>SPCX</b></td><td class="num neg">−$407.60</td><td class="num">—</td></tr>
@@ -137,7 +137,8 @@
       <tr><td>2026-11-13</td><td><b>TSM</b></td><td class="num neg">−$404.79</td><td class="num neg">−$1.90</td></tr>
       <tr><td>2026-11-14</td><td><b>TSM</b></td><td class="num neg">−$396.12</td><td class="num neg">−$1.90</td></tr>
       <tr><td>2026-11-17</td><td><b>TSM</b></td><td class="num neg">−$374.06</td><td class="num neg">−$1.90</td></tr>
-      <tr><td colspan="2"><b>合計</b></td><td class="num neg"><b>−$15,276.77</b></td><td class="num neg"><b>−$60.88</b></td></tr>
+      <tr><td>2026-11-21</td><td><b>SPCX</b></td><td class="num neg">−$650.00</td><td class="num neg">−$1.91</td></tr>
+      <tr><td colspan="2"><b>合計</b></td><td class="num neg"><b>−$15,926.77</b></td><td class="num neg"><b>−$62.79</b></td></tr>
     </table>
   </section>
 
@@ -166,7 +167,7 @@
       <tr><td>佣金</td><td class="num">$0.00</td><td class="num">$0.00</td><td>已免佣</td></tr>
       <tr><td><b>每筆合計</b></td><td class="num"><b>$1.90</b></td><td class="num"><b>$1.92</b></td><td></td></tr>
     </table>
-    <div class="notes" style="margin-top:10px">上表結構以三筆已展開截圖核實：賣出 NVDA 2026-11-09（$1.92）與買入 TSM 2026-11-14（$1.90）、2026-11-17（$1.90）。全帳手續費合計 <b>$70.48</b>（買入 34 筆 $60.88、賣出 5 筆 $9.60；6 月兩筆 SPCX 買入手續費未提供，未計）；其餘各筆截圖僅顯示費用合計（買入多為 $1.90、賣出 $1.92，個別買入 $1.91／$1.92），合計已按實收計入，未逐筆展開。</div>
+    <div class="notes" style="margin-top:10px">上表結構以四筆已展開截圖核實：賣出 NVDA 2026-11-09（$1.92）、買入 TSM 2026-11-14（$1.90）、2026-11-17（$1.90）與買入 SPCX 2026-11-21（$1.91）。買入 $1.91 為平台 $1.88＋交收 $0.02＋綜合審計 $0.01，交收費較 $1.90 結構高 $0.01。全帳手續費合計 <b>$72.39</b>（買入 35 筆 $62.79、賣出 5 筆 $9.60；6 月兩筆 SPCX 買入手續費未提供，未計）；其餘各筆截圖僅顯示費用合計（買入多為 $1.90、賣出 $1.92，個別買入 $1.91／$1.92），合計已按實收計入，未逐筆展開。</div>
   </section>
 
   <section>
@@ -187,16 +188,16 @@
     <div class="notes">
       <b>總投入</b>＝換匯入金總和 <b>$14,105.59</b> ＋ 2026-06 SpaceX 早期買入資金 <b>$587.69</b>（2026-10-21 用戶確認合併計入）＝<b>$14,693.28</b>。<br>
       <b>投入成本</b>＝買入成交金額合計（不含手續費，與券商持倉成本口徑一致）。<br>
-      <b>浮動盈虧</b>＝持倉市值 − 投入成本。13 檔合計 <b>−$2,234.17</b>。<br>
+      <b>浮動盈虧</b>＝持倉市值 − 投入成本。13 檔合計 <b>−$2,192.02</b>。<br>
       <b>已實現損益</b>＝賣出成交金額 − 該持倉投入成本；本期 5 筆賣出合計 <b>−$439.62</b>（VRT −$207.10、TEM +$103.35、BEAM +$5.93、META −$129.33、NVDA −$212.46；賣出手續費計入交易手續費）。<br>
-      <b>可用現金</b>＝總投入 − 買入成交 + 賣出成交 − 買賣手續費 + 股息淨收入＝<b>$1,997.66</b>（帳戶內無出金）。<br>
+      <b>可用現金</b>＝總投入 − 買入成交 + 賣出成交 − 買賣手續費 + 股息淨收入＝<b>$1,345.75</b>（帳戶內無出金）。<br>
       <b>帳戶總值</b>＝持倉市值 + 可用現金。<b>累計損益</b>＝帳戶總值 − 總投入（含手續費、股息稅費的影響）。<br>
       行情標籤誠實標示：<b>靜態快照</b>為收盤價；<b>即時</b>為瀏覽器直連報價（CNBC 主源、TradingView 備援），開頁自動刷新、盤中每 30 分鐘自動刷新，也可手動點擊刷新；雙源失敗時保留快照、標示「獲取失敗」。
     </div>
   </section>
 
   <footer>
-    數據來源：券商資金流水截圖（34 筆買入、5 筆賣出、4 筆換匯、4 筆股息）與持倉截圖（2026-10-17 取得，2026-10-21、2026-10-22、2026-10-23、2026-11-03、2026-11-10、2026-11-13、2026-11-14、2026-11-17 追加交易截圖）；2026-06 兩筆 SPCX 買入為用戶 2026-10-21 口頭確認補錄（手續費未提供，未計）·
+    數據來源：券商資金流水截圖（35 筆買入、5 筆賣出、4 筆換匯、4 筆股息）與持倉截圖（2026-10-17 取得，2026-10-21、2026-10-22、2026-10-23、2026-11-03、2026-11-10、2026-11-13、2026-11-14、2026-11-17、2026-11-21 追加交易截圖）；2026-06 兩筆 SPCX 買入為用戶 2026-10-21 口頭確認補錄（手續費未提供，未計）·
     持倉股數與每檔買入金額已逐檔交叉核對一致 · 本頁為個人持倉記錄，公開連結請注意隱私。
   </footer>
 </div>
@@ -206,7 +207,7 @@
      Updates price/market/floating per row and the summary cards.
      Auto-refresh on page open, manual button, and every 30 min during market hours. */
   var HOLDINGS = [
-    {s:"SPCX", q:13, cost:1950.69, tv:"NASDAQ"},
+    {s:"SPCX", q:18, cost:2600.69, tv:"NASDAQ"},
     {s:"NVDA", q:6, cost:1248.60, tv:"NASDAQ"},
     {s:"AVGO", q:3, cost:1060.64, tv:"NASDAQ"},
     {s:"GEV", q:1, cost:928.18, tv:"NYSE"},
@@ -220,7 +221,7 @@
     {s:"BEAM", q:5, cost:128.58, tv:"NASDAQ"},
     {s:"SKHY", q:1, cost:160.90, tv:"NASDAQ"}
   ];
-  var CASH = 1997.66, TOTAL_IN = 14693.28;
+  var CASH = 1345.75, TOTAL_IN = 14693.28;
   var SYMBOLS = HOLDINGS.map(function (h) { return h.s; });
   var CNBC_URL = "https://quote.cnbc.com/quote-html-webservice/restQuote/symbolType/symbol?symbols="
     + SYMBOLS.join(",") + "&requestMethod=itv&noform=1&partnerId=2&fund=1&exthrs=1&output=json";
